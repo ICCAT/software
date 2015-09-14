@@ -1,0 +1,28 @@
+\documentclass[a4paper,10pt]{article}
+%\documentclass[a4paper,10pt]{scrartcl}
+
+\usepackage[utf8]{inputenc}
+
+\title{}
+\author{}
+\date{}
+
+\pdfinfo{%
+  /Title    ()
+  /Author   ()
+  /Creator  ()
+  /Producer ()
+  /Subject  ()
+  /Keywords ()
+}
+
+\begin{document}
+\maketitle
+
+
+
+Stock assessments underpin the scientific advice for management that is provided by the Standing Committee on Research and Statistics to the Commission. In recent years, the SCRS has implemented a number of activities whose purpose is to improve the quality of this advice. Part of this effort is the so-called "software catalogue". The aim of the catalogue is to document the procedures taken to validate some of the stock assessment programs that are commonly used by the various working groups.
+
+Inclusion of a particular computer program in the ICCAT software catalogue does not guarantee that the software is free of bugs, nor does it imply any sort of institutional endorsement for its use. Inclusion in the catalog is simply a way of documenting what steps, if any, the programmer has taken to ensure that the program does what it purports to do. 
+
+\end{document}

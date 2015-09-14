@@ -1,0 +1,320 @@
+\documentclass[a4paper,10pt]{article}
+%\documentclass[a4paper,10pt]{scrartcl}
+
+\usepackage[utf8x]{inputenc}
+\usepackage[authoryear]{natbib}
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{lscape}
+
+\usepackage{pdfpages}
+
+%\AtBeginDocument{\renewcommand{\bibname}{}}
+
+
+\section{Objectives}
+
+An action under the SCRS Strategic Plan is to “Consolidate the stock assessment catalogue to ensure the best use of models that should be fully documented”. The objectives of this document are to
+
+\begin{itemize}
+ \item Reinvigorate the ICCAT Software Catalogue as required under the Strategic Plan. 
+  \item Encourage software development and innovation; while ensuring reliability, stability, auditability, accountabilty and supportability of software. 
+  \item Ensure procedures are consistent with best practice elsewhere, i.e. that of other RFMOs and bodies responsible for developing advice based on software.
+\end{itemize}
+
+
+Steps
+
+\begin{enumerate}
+ \item Contact rapporteurs of assessment WG with a summary of the old requirements and issues that have arisen since the establishment of the Software Catalogue, e.g. related to the Strategic Plan, Kobe advice framework, SISAM/WCSAM, recent assessment and the evaluation of Management Procedures (MP) using Management Strategy Evaluation. 
+ \item Ask rapporteurs to review  if the old requirements are still adequate or need updating and to propose a set of revised requirements.
+ \item Ask rapporteurs to use these new requirements to "certify" ASPIC. 
+ \item In parallel canvass views of software developers since if the process becomes too \textbf{\textit{burdensome}} then no software will be developed. 
+ \item Canvass views of other RFMOs and bodies that use stock assessment methods. 
+ \item Presented results of the exercise to the SCRS which would approve the new protocol.
+\end{enumerate}
+
+
+\section{Strategic Plan}
+
+Action
+\textbf{1.3 Consolidate the stock assessment catalogue to ensure the best use of models that should be fully documented}
+
+\subsection*{Strategies}
+
+\begin{description}
+ \item[1.3.1] Update the current Stock Assessment Catalogue \footnote{\url{https://www.iccat.int/en/AssessCatalog.htm}} to remove outdated software and update the software versions that are currently being used. 
+ \item[1.3.2] Ensure that all software used in the most recent assessments are matched up with the versions in the catalogue.
+ \item[1.3.3] Ensure that software is well documented and have an accompanying user’s manual and code.
+\end{description}
+
+\subsection*{Measurable targets}
+
+Reactivate the Working Group of the Stock Assessment Catalogue and review the protocols of inclusion and updating the software used for stock assessments while maintain a historic repository of version control
+
+\section{Catalogue}
+
+\section{Tables}
+
+%\begin{landscape}
+\maketitle
+\begin{table}
+\caption{Software in Catalogue}
+\begin{tabular}{|l|l|l| p{4cm} |} \hline
+\multicolumn{4}{|l|}{\textbf{Catalogued Software}} \\ \hline
+\multirow{1}{*}{Package}     & Version & Author                       & Description           \\ \hline
+\multirow{1}{*}{PRODFIT}     & 1.0     &\href{}{Alain Fonteneau}      & Equilibrium Biomass  Model \\ \hline
+\multirow{1}{*}{ASPIC}       & 5.05    &\href{}{Mike Prager}          & Biomass Dynamic Model fitted using maximum likelihood \\ \hline
+\multirow{1}{*}{ASPIC}       & 3.82    &\href{}{Mike Prager}          & Biomass Dynamic Model fitted using maximum likelihood \\ \hline
+\multirow{1}{*}{BSP2}        & 3.0     &\href{}{Murdoch MacAllister}  & Biomass Dynamic Model fitted using Bayesian simulation \\ \hline
+\multirow{1}{*}{VPA-2Box}    & 3.01    &\href{}{Clay Porch}           & Virtual Population Analysis fitted using maximum likelihood\\ \hline
+\multirow{1}{*}{Pro-2Box}    & 2.01    &\href{}{Clay Porch}           & Projection for VPA-2Box \\ \hline
+\multirow{1}{*}{FSIM}        & 3.0     &\href{}{Phil Goodyear}        & A general purpose fish population simulator designed to simulate many forms of fisheries data routinely collected from real fisheries \\ \hline
+\multirow{1}{*}{SEEPA}       & 3.0     &\href{}{Phil Goodyear}        & Simulates longline catch and effort data to test the robustness of the habitat approach to cpue standardization. \\ \hline
+%\multirow{1}{*}{} & \href{mailto:}{@}  &   &  \\ \hline
+\end{tabular}
+\end{table}
+
+%\end{landscape}
+
+
+%\section{Current Procedure}
+
+Stock assessments underpin the scientific advice for management that is provided by the Standing Committee on Research and Statistics to the Commission. In recent years, the SCRS has implemented a number of activities whose purpose is to improve the quality of this advice. Part of this effort is the so-called "software catalogue". The aim of the catalogue is to document the procedures taken to validate some of the stock assessment programs that are commonly used by the various working groups.
+
+Inclusion of a particular computer program in the ICCAT software catalogue does not guarantee that the software is free of bugs, nor does it imply any sort of institutional endorsement for its use. Inclusion in the catalogue is simply a way of documenting what steps, if any, the programmer has taken to ensure that the program does what it purports to do. Recent problems, even for software in the catalogue, have included different results being obtained when assessment are rerun due to lack of appropriate diagnostics, numerous versions of source code and differences between compilers and operating systems.
+
+However, the changing requirements of the Commission and the development the demands for new scientific approaches means that the original objectives of the catalogue may need to be reviewed. 
+
+\section{Proposal}
+
+Therefore it is proposed to review the protocols of inclusion and updating the software used for stock assessments while maintaining a historic repository of version control. The 1st step is to canvass rapporteurs of stock assessment working groups
+
+\subsection{Objectives} 
+The objectives, as given in the Strategic plan are
+
+\begin{description}
+ \item[Update] the current stock assessment catalogue to remove outdated software and update the software versions that are currently being used. 
+ \item[Version Control] Ensure that all software used in the most recent assessments are matched up with the versions in the catalogue.
+ \item[Documentation] Ensure that software is well documented and have an accompanying user’s manual and code.
+\end{description}
+
+\subsection{Issues}
+
+What about software that is extensively used by other RFMOs and management bodies and has been used to provide advice by ICCAT WGs but is not in the catalogue. E.g. ICES and XSA \citep{shepherd1999extended}, WCPFC and Multifan-CL \citep{fournier1998mfcl}, IATCC and SS \citep{methot2005technical}.
+
+\begin{itemize}
+ \item Do developers have the time or be interested in going through an ICCAT certification process? 
+ \item Is a peer review paper good enough?
+ \item Could the review committee complete the application?
+\end{itemize}
+
+Should the source code be open source e.g. GPL\footnote{http://www.gnu.org/licenses/gpl.html}?  Since the more people who can see and test a set of code, the more likely that bugs and flaws will be caught and fixed quickly \citep{raymond1999cathedral}. Benefits include 
+\begin{itemize}
+ \item Open source software is better at adhering to standards than proprietary software, e.g. allows recompiling for running on clusters and that algorithms produce the same results across operating systems. With closed source software, you have nothing but the authors claims telling you that they're adhering to standards.
+ \item Code can be modified to meet specific needs and encourages developers to work in parallel, so that a best solution can be chosen instead of the only solution.
+ \item  Where source code is open source users of the product will often discover and correct defects themselves. 
+ \item Developers are likely to consider reducing the complexity and improve the maintainability of software.  
+\end{itemize}
+
+This requires a version control system.
+
+\subsection{Procedure}
+    
+The latest version of ASPIC\footnote{http://www.mhprager.com/aspic.html}  is version 7.01, there are two versions in the ICCAT catalogue i.e. 3.82 and 5.05; while the version on the NOAA Fisheries Toolbox is 5.34.9.  There is also an R version developed under the GBYP \citep{kell2013aspicalbn}.
+
+
+
+\section{Stock Assessment}
+
+
+\subsection{International Initiatives}
+
+The Strategic Initiative for Stock Assessment Methods (SISAM) is designed to ensure that scientists apply the best stock assessment methods when developing management advice. The first stage culminated in the World Conference on Stock Assessment Methods (WCSAM) and a simulation-based workshop to evaluate performance of stock assessment methods. The second stage involves continued coordination with RFMOs and national agencies to development \textit{good practice} guidelines and further evaluation of model performance.  
+
+WCSAM included a workshop on testing assessment methods using simulations based on datasets from 14 representative fish stocks from around the world; one of which was North Atlantic albacore. Two types of simulations were used i.e. self-testing and cross-testing \citep[see][]{deroba2014simulation}.
+
+
+\subsection{Testing}
+There are a variety of approaches for testing stock assessment software e.g.
+
+\begin{description}
+ \item[Self testing:] a model is first fitted to data, then psuedo data are simulated based on the fit and the same model is refitted \citep[e.g.][]{lee2011m}
+ \item[Cross testing:] again a model is fitted to data and psuedo data generated but a different model is then fitted.
+ \item[Simulation:] where psuedo data based on a variety of assumptions about the dynamics are simulated for fitting to a model but without fitting a model to data first.
+ \item[Cross validation] a model is fitted to only part of a time series of data, then the dynamics are projected forward and compared to with model fits to the entire time series \citep[e.g.][]{patterson2001estimating}. 
+ \item[MSE:] the stock assessment method is tested as part of a Management Procedure (MP) using Operating Models, which may or may not be based on fits to data \citep[][]{kell2006operational}.
+\end{description}
+
+\section{Software}
+
+\subsection{Testing}
+Testing is a vital part of software development as it ensures that code does what it is intended to. Unit tests are simple to write, easily invoked, and help the software development process, from early stage exploratory code, to late stage maintenance of a long-established project.
+
+For example the  Bioconductor\footnote{\url{http://www.bioconductor.org/}} project that provides tools in the form of R packages for the analysis and comprehension of genomic data. Unit tests are a standard part of the Bioconductor build process uses the RUnit %\footnote{\url{http://master.bioconductor.org/developers/how-to/unitTesting-guidelines/}} 
+package to write unit tests. There are other R package for developing unit tests e.g. testThat\footnote{\url{http://r-pkgs.had.co.nz/tests.html}}. All available from CRAN\footnote{\url{http://cran.r-project.org/}} a network of ftp and web servers that store identical, up-to-date, versions of code and documentation for R.
+
+~\\
+Benefits of testing include 
+\begin{description}
+ \item[Fewer bugs]. Since it is explicit about how code should behave there will be fewer bugs. The reason why is a bit like the reason double entry book-keeping works: because you describe the behaviour of your code in two places, both in your code and in your tests, you able to check one against the other. By following this approach to testing, you can be sure that bugs that you’ve fixed in the past will never come back to haunt you.
+
+  \item[Better Code Structure] Code that’s easy to test is usually better designed. This is because writing tests forces you to break up complicated parts of your code into separate functions that can work in isolation. This reduces duplication in your code. As a result, functions will be easier to test, understand and work with (it’ll easier to combine them in new ways).
+
+   \item[Easier Restarts]. If you always finish a coding session by creating a failing test (e.g. for the next feature you want to implement), testing makes it easier for you to pick up where you left off: your tests will let you know what to do next.
+
+    \item[Robust Code] If you know that all the major functionality of your package has an associated test, you can confidently make big changes without worrying about accidentally breaking something. For me, this is particularly useful when I think I have a simpler way to accomplish a task (usually the reason my solution is simpler is that I’ve forgotten an important use case!).
+\end{description}
+
+\subsection{Version Control}
+
+Version control%\footnote{\url{http://git-scm.com/book/en/v2/Getting-Started-About-Version-Control}} 
+is a system that records changes to a file or set of files over time so that you can recall specific versions later, e.g. track changes in MS Word. A Version Control System (VCS) allows you to revert files back to a previous state, revert the entire project back to a previous state, compare changes over time, see who last modified something that might be causing a problem, who introduced an issue and when, and more. Using a VCS also generally means that if you screw things up or lose files, you can easily recover. 
+
+A simple version-control method is to copy files into another directory (time-stamped if you are wise). This approach is very common because it is so simple, but it is also incredibly error prone. It is easy to forget which directory you’re in and accidentally write to the wrong file or copy over files you don’t mean to. To deal with this issue, programmers long ago developed local VCSs that had a simple database that kept all the changes to files under revision control. The next major issue that people encounter is that they need to collaborate with others. Therefore, Centralized Version Control Systems (CVCSs) were developed. These systems, such as CVS\footnote{\url{http://www.tortoisecvs.org/}}, Subversion\footnote{\url{https://subversion.apache.org/}}, and Perforce\footnote{\url{http://www.perforce.com/}}, have a single server that contains all the versioned files, and a number of clients that check out files from that central place. For many years, this was the standard for version control. This offers many advantages, especially over local VCSs. For example, everyone knows to a certain degree what everyone else on a project is doing. Administrators have fine-grained control over who can do what; and it’s far easier to administer a CVCS than it is to deal with local databases on every client.
+
+However, this setup also has some serious downsides. The most obvious is the single point of failure that the centralized server represents. If that server goes down for an hour, then during that hour nobody can collaborate at all or save versioned changes to anything they’re working on. If the hard disk the central database is on becomes corrupted, and proper backups haven’t been kept, you lose absolutely everything – the entire history of the project except whatever single snapshots people happen to have on their local machines. Local VCS systems suffer from this same problem – whenever you have the entire history of the project in a single place, you risk losing everything.
+
+Therefore Distributed Version Control Systems (DVCSs) was developed. In a DVCS (such as Git\footnote{\url{http://github.com/}}, Mercurial\footnote{\url{http://mercurial.selenic.com/}}, Bazaar\footnote{\url{http://bazaar.canonical.com/en/}} or Darcs\footnote{\url{http://darcs.net/}}), clients don’t just check out the latest snapshot of the files: they fully mirror the repository. Thus if any server dies, and these systems were collaborating via it, any of the client repositories can be copied back up to the server to restore it. Every clone is really a full backup of all the data.
+
+Furthermore, many of these systems deal pretty well with having several remote repositories they can work with, so you can collaborate with different groups of people in different ways simultaneously within the same project. 
+
+\subsection{Validation}
+
+Software validation is a complex issue. The U.S. Food and Drug Administration (FDA) takes
+\textit{The Least Burdensome Approach}\footnote{\url{http://www.fda.gov/downloads/RegulatoryInformation/Guidances/ucm126955.pdf}}. This does not prescribe specific practices, tools, coding methods or any other technical activity. Instead organisations determine, and then strictly adhere to their self-defined validation and verification processes.
+
+However, development activities and outcomes must be clearly defined, documented, verified, and validated against an organisation's process. The goal of this approach is to give medical device makers enough rope to determine how to best ensure public safety. But in practice, the effect has been that organisations have enough rope to hang themselves. This is because the requirements, expressed in the relevant Federal Regulations %\footnote{\url{http://www.gpo.gov/fdsys/browse/collectionCfr.action?collectionCode=CFR}}
+, represent extensive planning and testing, which require validation. 
+
+
+\newpage\clearpage
+\bibliography{refs.bib}
+\bibliographystyle{abbrvnat} 
+
+\end{document}
+\section{Review}
+
+\subsection{Rapporteurs}
+
+\subsubsection{Catalogue}
+
+\begin{description}
+ \item[Use]
+ \item[Used to produce K2SM]
+ \item[Later version used]
+ \item[Code modified by users]
+ \item[Additional Issues]
+\end{description}
+
+
+\begin{description}
+ \item[Define well documented]
+ \item[What are the minimum requirements for a user manual?]
+ \item[What Licence should code be available under?]
+ \item[Other issues, e.g. validation, testing, peer review.]
+\end{description}
+ 
+\subsubsection{Non-catalogue}
+
+\subsection{Developers}
+
+\subsubsection{Catalogue}
+
+\begin{description}
+ \item[Do you want it to remain in catalogue?]
+ \item[Latest Version]
+ \item[Licence]
+ \item[Support]
+ \item[Version Control]
+ \item[Unit testing]
+ \item[Validation]
+ \item[Diagnostics]
+ \item[Language]
+ \item[OS]
+ \item[Peer review]
+\end{description}
+
+\subsubsection{Non-catalogue}
+
+\begin{description}
+ \item[Version Control]
+ \item[Licence]
+ \item[Support]
+ \item[Validation]
+ \item[Language]
+ \item[Peer review]
+\end{description}
+
+
+Abid (noureddine.abid65@gmail.com)
+	AMANDÈ Monin Justin (monin.amande@yahoo.fr)
+	Bannerman (paulbann@hotmail.com)
+	Clay Porch (clay.porch@noaa.gov)
+	Enric Cortés (enric.cortes@noaa.gov)
+	Freddy Arocha (farochap@gmail.com)
+	Haritz Arrizabalaga (harri@pas.azti.es)
+	Hilario Murua (hmurua@azti.es)
+	Josechu (urbina@ma.ieo.es)
+	Michael.Schirripa (Michael.Schirripa@noaa.gov)
+	Miguel Neves dos Santos (mnsantos@ipma.pt)
+	Mikihiko (kaim@affrc.go.jp)
+	Shannon Calay (shannon.calay@noaa.gov)
+	Sylvain Bonhommeau (Sylvain.Bonhommeau@ifremer.fr)
+	Tserpes (gtserpes@her.hcmr.gr)
+	Kotaro (yokawa@fra.affrc.go.jp)
+	
+    
+noureddine.abid65@gmail.com,
+monin.amande@yahoo.fr,
+paulbann@hotmail.com,
+clay.porch@noaa.gov,
+enric.cortes@noaa.gov,
+farochap@gmail.com,
+harri@pas.azti.es,
+hmurua@azti.es,
+urbina@ma.ieo.es,
+Michael.Schirripa@noaa.gov,
+Michael.Schirripa@noaa.gov,
+kaim@affrc.go.jp,
+shannon.calay@noaa.gov,
+Sylvain.Bonhommeau@ifremer.fr,
+gtserpes@her.hcmr.gr,
+yokawa@fra.affrc.go.jp
+
+	
+Methods
+
+PRODFIT (U1) Fontaneau
+ASPIC (3.82) Prager
+ASPIC (5.05
+
+BSP (3.0) Murdoch K. McAllister beth
+
+VPA-2Box (3.01) Clay
+
+PRO-2Box (2.01 caly
+
+FSIM (3.0) philgoodyear@cox.net
+SEEPA (3.0) philgoodyear@cox.net
+
+
+                 
+
+
+ \item[Do you want it to remain in catalogue?]
+ \item[Latest Version]
+ \item[Licence]
+ \item[Support]
+ \item[Version Control]
+ \item[Unit testing]
+ \item[Validation]
+ \item[Language]
+ \item[OS]
+ \item[Peer review]
+
+
+Task are to update the current Catalogue to remove outdated software and update the software versions that are currently being used. To  ensure that all software used in the most recent assessments are matched up with the versions in the catalogue and that software is well documented and have an accompanying user’s manual and code.
