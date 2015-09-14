@@ -1,0 +1,17 @@
+Hi Laurie,
+
+I filled out your survey for ASPIC 3.x just to say it was obsolete, then it was not possible to fill out again for the other versions. Basically--
+
+    ASPIC 3.x is obsolete and hasn't been supported for years. (The latest version was 3.93.) I don't recommend that it be used for anything. Bug fixes for 5.x have not been retrofitted to 3.x since about 2003.
+    ASPIC 5.x is supported by me. The current version is 5.57.  I have not put a "use by" date on it yet, but I suppose after a couple of more years, I'll stop supporting it in favor of version 7.x.
+    ASPIC 7.x is supported by me. The current version is 7.01. I have no plans to discontinue support, nor to add any new features (except perhaps minor ones that meet a pressing need).
+    Both are available from my Web site. The version of 5.x on the NOAA Toolbox site is out of date, but AFAIK, NOAA doesn't have anyone maintaining the Toolbox. If someone installs the Toolbox version, a knowledgeable user can overwrite the executables with the new ones from the version 5.x on my Web site.
+    Versions 5.x and 7.x are written in standard-conforming Fortran 95. There may be a few well-known extensions used for filename manipulation. They are compiled with gnu make, and the makefiles differ slightly by platform. I have working makefiles for 5.x and 7.x on Windows, and 5.x on Linux, all using the Absoft Fortran compiler (which on Windows at least is considerably faster than the free compilers).
+    I do not use a formal RCS, but I do keep copies of all significant revisions. Learning an RCS has been on my list for 30 yrs. At this point, I don't think it will happen.
+    Testing of ASPIC 5.x was done by trying to recover the correct answers from a large number (> 50,000) of independently simulated data sets. I also did some torture testing of incorrect input files and odd cases to check error handling. Obviously, I can't anticipate every error a user might make, but ASPIC catches quite a few of them.
+    Testing of ASPIC 7.x was done by converting some of the version 5 test data sets and seeing if the answers could be replicated, and also by modifying some files to include version-7-specific features and seeing if answers were sensible.
+    ASPIC 5.x has also been used in many stock assessments, in some cases along with different models. This gives some indication that its answers are sensible, or even agree with those from other approaches.
+    Version 7.0 remains relatively little used, as far as I know. At least no one so far has said, "good job" or "this sucks." As I am retired, I'm not actively using it myself. I have no reason to believe it's problematic, but I'd like to know.
+    Many modules of the program were tested independently during development. After operation of a module is verified, it is tested as part of the program as a whole.
+    The only shortcoming I *know* of in ASPIC is that when it projects the catch attainable at Fmsy in the post-terminal year, it always uses the Schaefer equation. I have never got around to programming the generalized equation in this small section. If people are looking at projections, they will probably use ASPICP (the projection program), which uses the correct equations, or write their own.
+

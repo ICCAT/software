@@ -1,0 +1,9 @@
+Hi Laurie
+ 
+As I mentioned last time you inquired, SEEPA(3) should be removed. It has been replaced by another program (LLSIM) that is not in the ICCAT software catalogue. Depending on how the current Methods Working Group simulation initiative progresses, and the desires of other parties, I may submint the current version of LLSIM for inclusion.
+ 
+FSIM version 3 has been replaced by version 4 but the software catalog has not been updated. The documentation and FORTRAN source code are available on ResearchGate  About 20 copies of the source code were uploaded in the last couple of months. I don't know how many people have copies of the executables. I distributed about a dozen copies to folks at their request, but most of the requests for help implementing the software have come from people I didn't send it to. I've not distributed the Visual Basic code that implements the GUI (and don't intend to). I've no funding to help me support the program so it is extremely unlikely that the GUI will be updated past Windows 7, and my only support will be to current users. All this is a long way to encourage you to remove FSIM from the ICCAT catalogue unless there is some compelling reason for leaving it in.
+ 
+Please let me know your decision.
+Phil
+ 

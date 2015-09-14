@@ -1,0 +1,326 @@
+Delivered-To: lauriekell@gmail.com
+Received: by 10.27.93.208 with SMTP id r199csp653847wlb;
+        Mon, 9 Mar 2015 18:06:41 -0700 (PDT)
+X-Received: by 10.50.25.225 with SMTP id f1mr51743091igg.29.1425949600038;
+        Mon, 09 Mar 2015 18:06:40 -0700 (PDT)
+Return-Path: <yokawa.affrc@gmail.com>
+Received: from mail-ie0-x229.google.com (mail-ie0-x229.google.com. [2607:f8b0:4001:c03::229])
+        by mx.google.com with ESMTPS id p62si20284645iop.4.2015.03.09.18.06.39
+        for <lauriekell@gmail.com>
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 09 Mar 2015 18:06:40 -0700 (PDT)
+Received-SPF: pass (google.com: domain of yokawa.affrc@gmail.com designates 2607:f8b0:4001:c03::229 as permitted sender) client-ip=2607:f8b0:4001:c03::229;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: domain of yokawa.affrc@gmail.com designates 2607:f8b0:4001:c03::229 as permitted sender) smtp.mail=yokawa.affrc@gmail.com;
+       dkim=pass header.i=@gmail.com;
+       dmarc=pass (p=NONE dis=NONE) header.from=gmail.com
+Received: by mail-ie0-x229.google.com with SMTP id tr6so31138581ieb.2
+        for <lauriekell@gmail.com>; Mon, 09 Mar 2015 18:06:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type;
+        bh=p714b3L83nlT9y/ls0QFRoK7cTs9DJGvvsHjlyA4FZY=;
+        b=SNpFCHHPOWz6kEgzy8A5C2FDnZZN7RheIIIm0Rd/XSve/lj4S/iHh+CcS6SD68ymN/
+         2UgLT0x1koM1rFoNzUwog04i1kAkjMweyW2/96Vru28n+TjUCZYODPi8OWleNWOEt0xi
+         qiyuOSMvtZZf5+bIJ+2ase16bUv0kzJb9wOVKouAtF03khvAH0KIDYBxZUOT/3c2d2xc
+         1O9o8BxTDAcgag7nuy9wLRhGxa51oacPbatyr8EMnPZZgIjzKjTnhXVV6UutdgMXo2rl
+         G2HvXQFdJRPDT6w0nhLziZAiPv0g+7eqisog0vxPlhiJ7EidvN4z7J4kw3aeJNbTubFV
+         leRQ==
+MIME-Version: 1.0
+X-Received: by 10.107.167.3 with SMTP id q3mr51857484ioe.18.1425949599116;
+ Mon, 09 Mar 2015 18:06:39 -0700 (PDT)
+Received: by 10.36.66.144 with HTTP; Mon, 9 Mar 2015 18:06:39 -0700 (PDT)
+In-Reply-To: <089e0115f046d853bc050fd35dd1@google.com>
+References: <089e0115f046d853bc050fd35dd1@google.com>
+Date: Tue, 10 Mar 2015 10:06:39 +0900
+Message-ID: <CA+nsBT4z8QEnTeWC2FXUdbs1G3ktooRLh1E23j6xTx3+nx-72Q@mail.gmail.com>
+Subject: Re: ICCAT Software Catalogue Review
+From: Kotaro Yokawa <yokawa.affrc@gmail.com>
+To: lauriekell@gmail.com
+Cc: =?UTF-8?B?5L2Z5bed5rWp5aSq6YOO?= <yokawa@fra.affrc.go.jp>
+Content-Type: multipart/alternative; boundary=001a1141ca9e52b5cf0510e4c35f
+
+--001a1141ca9e52b5cf0510e4c35f
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Dear Sir,
+
+As chair of subcommittee of ecosystem, and I send you Japanese proposal
+basically coming from Japanese shark & billfish assessment team for your
+request;
+
+
+
+We like to propose for the preparation of Use-friendly Bayesian Surplus
+Production model program. Current situation of this program is;
+
+1)) Different modeling scientist using different program, namely, each
+modelist using his/her own program.
+
+2)  One of most famous program is the one developed by Prof. McAllister is
+written by rather old language. And very nice program with high reliability
+but hard to understand to manage it. In some case, we should input part of
+data directory into the program.
+
+So, our proposal is to develop single program with user friendly firmware
+for Bayesian Surplus Production model.
+
+
+
+Considering the fact the SS or MULTIFAN is still in the introduction phase
+in ICCAT, Production model is still important as opponent model as at this
+stage, going with single model results is too dangerous. We need to verify
+the results of complex model through the comparison with the one by simpler
+model.
+
+
+
+Considering the situation of not enough biological information, decrease of
+the time-area coverage of data of each fleet, sex specific characters of
+billfish and sharks, Bayesian type of treatment of some input priors should
+be quite beneficial. Also current Bayesian production model can treat
+multiple indices in the stochastic way with their CV.
+
+
+
+Best,
+
+
+
+Kotaro Yokawa
+
+
+2015-02-24 19:56 GMT+09:00 <lauriekell@gmail.com>:
+
+>  Dear All
+>
+> As part of the SCRS strategic plan the use of Software Catalogue by stock
+> assessment working groups is being reinvigorated. The first step is to
+> review its current use. I am therefore asking you to complete this short
+> questionnaire.
+>
+> Regards Laurence Kell
+>
+> If you have trouble viewing or submitting this form, you can fill it out
+> in Google Forms
+> <https://docs.google.com/forms/d/19m7RcGYLJkijYNs590tB-vBc6mO192ZTFqn9NfE=
+OOLg/viewform?c=3D0&w=3D1&usp=3Dmail_form_link>.
+>
+>
+> ICCAT Software Catalogue Review
+> Under the Strategic Plan an action is to =E2=80=9CConsolidate the stock a=
+ssessment
+> catalogue to ensure the best use of models that should be fully
+> documented=E2=80=9D.
+>
+> The objectives, as given in the Strategic plan are to
+>
+> Update the current stock assessment catalogue to remove outdated software
+> and update the software versions that are currently being used.
+>
+> Maintain version control so that all software used in the most recent
+> assessments are matched up with the versions in the catalogue.
+>
+> Ensure that software is well documented and has an accompanying user=E2=
+=80=99s
+> manual and code.
+>
+> This form asks Chairs of stock assessment working groups to review the
+> ICCAT Software Catalogue in order to see whether the current procedures
+> should be updated and are consistent with best practice. I.e. with other
+> RFMOs and bodies responsible for developing advice based on software.
+>
+> The catalogue is available at http://iccat.int/en/AssessCatalog.htm
+> <http://www.google.com/url?q=3Dhttp%3A%2F%2Ficcat.int%2Fen%2FAssessCatalo=
+g.htm&sa=3DD&sntz=3D1&usg=3DAFQjCNFOuml8TCQ1evb9JdUAvYbkdF8Wog>
+> and see
+> http://rscloud.iccat.int/SoftwareCatalogue/softwareCatalogue.pdf
+> <http://www.google.com/url?q=3Dhttp%3A%2F%2Frscloud.iccat.int%2FSoftwareC=
+atalogue%2FsoftwareCatalogue.pdf&sa=3DD&sntz=3D1&usg=3DAFQjCNHadHbZWeWXm5k_=
+GL9woulehvCaWg>
+> for a summary of issues.
+>
+>
+>
+>  Powered by
+> [image: Google Forms]
+>
+> <https://www.google.com/forms/about/?utm_source=3Dproduct&utm_medium=3Dfo=
+rms_logo&utm_campaign=3Dforms>
+> This content is neither created nor endorsed by Google.
+> Report Abuse
+> <https://docs.google.com/forms/d/19m7RcGYLJkijYNs590tB-vBc6mO192ZTFqn9NfE=
+OOLg/reportabuse?source=3Dhttps://docs.google.com/forms/d/19m7RcGYLJkijYNs5=
+90tB-vBc6mO192ZTFqn9NfEOOLg/viewform?sid%3D52efe4de7ca117f0%26c%3D0%26w%3D1=
+%26token%3Dcvpru0sBAAA.K3ItMJ9CwaWzlcgVx3Ejeg.LoC3Jh6s1lXmCinu3u7pFg>
+> - Terms of Service <http://www.google.com/accounts/TOS> - Additional Term=
+s
+> <http://www.google.com/google-d-s/terms.html>
+>
+>
+
+--001a1141ca9e52b5cf0510e4c35f
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Dear Sir,<br><br>
+
+<p class=3D"MsoNormal"><span lang=3D"EN-US">As chair of subcommittee of eco=
+system, and I
+send you Japanese proposal basically coming from Japanese shark &amp; billf=
+ish
+assessment team for your request;</span></p>
+
+<p class=3D"MsoNormal"><span lang=3D"EN-US">=C2=A0</span></p>
+
+<p class=3D"MsoNormal"><span lang=3D"EN-US">We like to propose for the prep=
+aration of
+Use-friendly Bayesian Surplus Production model program. Current situation o=
+f
+this program is;</span></p>
+
+<p class=3D"" style=3D"margin-left:18pt"><span style=3D"font-family:Wingdin=
+gs" lang=3D"EN-US"><span style>1)<span style=3D"font:7pt &quot;Times New Ro=
+man&quot;">) </span></span></span><span lang=3D"EN-US">Different modeling s=
+cientist using different program, namely, each
+modelist using his/her own program.</span></p>
+
+<p class=3D"" style=3D"margin-left:18pt"><span style=3D"font-family:Wingdin=
+gs" lang=3D"EN-US"><span style>2)<span style=3D"font:7pt &quot;Times New Ro=
+man&quot;">=C2=A0 </span></span></span><span lang=3D"EN-US">One of most fam=
+ous program is the one developed by Prof. McAllister is
+written by rather old language. And very nice program with high reliability=
+ but
+hard to understand to manage it. In some case, we should input part of data=
+ directory
+into the program.</span></p>
+
+<p class=3D"MsoNormal"><span lang=3D"EN-US"></span></p>
+
+<p class=3D"MsoNormal"><span lang=3D"EN-US">So, our proposal is to develop =
+single program
+with user friendly firmware for Bayesian Surplus Production model. </span><=
+/p>
+
+<p class=3D"MsoNormal"><span lang=3D"EN-US">=C2=A0</span></p>
+
+<p class=3D"MsoNormal"><span lang=3D"EN-US">Considering the fact the SS or =
+MULTIFAN is
+still in the introduction phase in ICCAT, Production model is still importa=
+nt
+as opponent model as at this stage, going with single model results is too =
+dangerous.
+We need to verify the results of complex model through the comparison with =
+the
+one by simpler model.</span></p>
+
+<p class=3D"MsoNormal"><span lang=3D"EN-US">=C2=A0</span></p>
+
+<p class=3D"MsoNormal"><span lang=3D"EN-US">Considering the situation of no=
+t enough
+biological information, decrease of the time-area coverage of data of each
+fleet, sex specific characters of billfish and sharks, Bayesian type of
+treatment of some input priors should be quite beneficial. Also current Bay=
+esian
+production model can treat multiple indices in the stochastic way with thei=
+r CV.
+<span style>=C2=A0</span></span></p>
+
+<p class=3D"MsoNormal"><span lang=3D"EN-US">=C2=A0</span></p>
+
+<p class=3D"MsoNormal"><span lang=3D"EN-US">Best,</span></p>
+
+<p class=3D"MsoNormal"><span lang=3D"EN-US">=C2=A0</span></p>
+
+<p class=3D"MsoNormal"><span lang=3D"EN-US">Kotaro Yokawa</span></p>
+
+<br></div><div class=3D"gmail_extra"><br><div class=3D"gmail_quote">2015-02=
+-24 19:56 GMT+09:00  <span dir=3D"ltr">&lt;<a href=3D"mailto:lauriekell@gma=
+il.com" target=3D"_blank">lauriekell@gmail.com</a>&gt;</span>:<br><blockquo=
+te class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc so=
+lid;padding-left:1ex"><div><div style=3D"display:inline;width:576px"><div>
+</div>
+<p>Dear All</p><p>As part of the SCRS strategic plan the use of Software Ca=
+talogue by stock assessment working groups is being reinvigorated. The firs=
+t step is to review its current use. I am therefore asking you to complete =
+this short questionnaire.</p><p>Regards Laurence Kell</p><p></p><p></p>
+If you have trouble viewing or submitting this form, you can <a href=3D"htt=
+ps://docs.google.com/forms/d/19m7RcGYLJkijYNs590tB-vBc6mO192ZTFqn9NfEOOLg/v=
+iewform?c=3D0&amp;w=3D1&amp;usp=3Dmail_form_link" target=3D"_blank">fill it=
+ out in Google Forms</a>.
+<p></p>
+<div dir=3D"ltr"><div><h1 dir=3D"ltr" style=3D"margin:.67em 0">ICCAT Softwa=
+re Catalogue Review</h1></div>
+<div style=3D"white-space:pre-wrap;display:inline"><div dir=3D"ltr" style=
+=3D"font:inherit;width:99%;margin:0 0 1em;white-space:pre-wrap;word-wrap:br=
+eak-word">Under the Strategic Plan an action is to =E2=80=9CConsolidate the=
+ stock assessment catalogue to ensure the best use of models that should be=
+ fully documented=E2=80=9D. <p>The objectives, as given in the Strategic pl=
+an are to</p><p>Update the current stock assessment catalogue to remove out=
+dated software and update the software versions that are currently being us=
+ed.</p><p>Maintain version control so that all software used in the most re=
+cent assessments are matched up with the versions in the catalogue.</p><p>E=
+nsure that software is well documented and has an accompanying user=E2=80=
+=99s manual and code.</p><p>This form asks Chairs of stock assessment worki=
+ng groups to review the ICCAT Software Catalogue in order to see whether th=
+e current procedures should be updated and are consistent with best practic=
+e. I.e. with other RFMOs and bodies responsible for developing advice based=
+ on software. </p><p>The catalogue is available at <a href=3D"http://www.go=
+ogle.com/url?q=3Dhttp%3A%2F%2Ficcat.int%2Fen%2FAssessCatalog.htm&amp;sa=3DD=
+&amp;sntz=3D1&amp;usg=3DAFQjCNFOuml8TCQ1evb9JdUAvYbkdF8Wog" target=3D"_blan=
+k">http://iccat.int/en/AssessCatalog.htm</a> and see<br><a href=3D"http://w=
+ww.google.com/url?q=3Dhttp%3A%2F%2Frscloud.iccat.int%2FSoftwareCatalogue%2F=
+softwareCatalogue.pdf&amp;sa=3DD&amp;sntz=3D1&amp;usg=3DAFQjCNHadHbZWeWXm5k=
+_GL9woulehvCaWg" target=3D"_blank">http://rscloud.iccat.int/SoftwareCatalog=
+ue/softwareCatalogue.pdf</a> for a summary of issues.<br></p><p></p><p></p>=
+<p></p><p></p><p></p></div>
+
+</div>
+<div><div><form action=3D"https://docs.google.com/forms/d/19m7RcGYLJkijYNs5=
+90tB-vBc6mO192ZTFqn9NfEOOLg/formResponse" method=3D"POST" target=3D"_blank"=
+ onsubmit=3D"return window.confirm(&quot;=E6=83=85=E5=A0=B1=E3=82=92=E5=A4=
+=96=E9=83=A8=E3=83=9A=E3=83=BC=E3=82=B8=E3=81=AB=E9=80=81=E4=BF=A1=E3=81=97=
+=E3=82=88=E3=81=86=E3=81=A8=E3=81=97=E3=81=A6=E3=81=84=E3=81=BE=E3=81=99=E3=
+=80=82 \n=E5=AE=9F=E8=A1=8C=E3=81=97=E3=81=A6=E3=82=88=E3=82=8D=E3=81=97=E3=
+=81=84=E3=81=A7=E3=81=99=E3=81=8B?&quot;);"><ol>
+
+<input name=3D"draftResponse" value=3D"[,,&quot;4961717089194954830&quot;]
+" type=3D"hidden">
+<input name=3D"pageHistory" value=3D"0" type=3D"hidden">
+<input name=3D"usp" value=3D"mail_form_submit" type=3D"hidden">
+
+<input name=3D"fbzx" value=3D"4961717089194954830" type=3D"hidden">
+
+<div style=3D"margin:12px 0"><table><tbody><tr><td dir=3D"ltr" style=3D"mar=
+gin-bottom:1.5em;vertical-align:middle;margin-left:0;margin-top:0;max-width=
+:100%;display:inline-block">
+<input name=3D"continue" value=3D"Continue =C2=BB" type=3D"submit"></td>
+</tr></tbody></table></div></ol></form></div>
+<div><div></div>
+<div><div></div>
+<div dir=3D"ltr"><div style=3D"margin-top:2em"><span>Powered by</span>
+<a href=3D"https://www.google.com/forms/about/?utm_source=3Dproduct&amp;utm=
+_medium=3Dforms_logo&amp;utm_campaign=3Dforms" target=3D"_blank"><div><img =
+src=3D"https://ssl.gstatic.com/docs/forms/forms_logo_small_dark.png" alt=3D=
+"Google Forms"></div></a></div>
+<div style=3D"color:#777;font-size:11px;margin-top:1.5em"><span>This conten=
+t is neither created nor endorsed by Google.</span>
+<br>
+<a href=3D"https://docs.google.com/forms/d/19m7RcGYLJkijYNs590tB-vBc6mO192Z=
+TFqn9NfEOOLg/reportabuse?source=3Dhttps://docs.google.com/forms/d/19m7RcGYL=
+JkijYNs590tB-vBc6mO192ZTFqn9NfEOOLg/viewform?sid%3D52efe4de7ca117f0%26c%3D0=
+%26w%3D1%26token%3Dcvpru0sBAAA.K3ItMJ9CwaWzlcgVx3Ejeg.LoC3Jh6s1lXmCinu3u7pF=
+g" target=3D"_blank">Report Abuse</a>
+-
+<a href=3D"http://www.google.com/accounts/TOS" target=3D"_blank">Terms of S=
+ervice</a>
+-
+<a href=3D"http://www.google.com/google-d-s/terms.html" target=3D"_blank">A=
+dditional Terms</a></div></div></div></div>
+</div></div>
+<br>
+</div></div></blockquote></div><br></div>
+
+--001a1141ca9e52b5cf0510e4c35f--
