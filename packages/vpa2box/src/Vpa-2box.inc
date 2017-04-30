@@ -12,7 +12,7 @@
 !     initialize all data (negative values mean no data)
       CATCH_DATA = 1.0 ; EFFORT_DATA = -9.0 ; SEL_EFFORT = 1.0 ; PSEL = -1.0 ; INDEX_MEAN=0 ; PDF_EFFORT=0 ; EFFORT_DATA_STORE=-1.0
       SIGMA_Q=0 ; SIGMA_F=0 ; SIGMA_M=0 ; SIGMA_T=0 ; SIGMA_TERMINAL=0 ; WEIGHT_CATCH=0 ; WEIGHT_SSB=0
-      ETA_Q=0   ; ETA_F=0   ; ETA_M=0   ; ETA_T=0  ; ETA_TERMINAL=0
+      ETA_Q=0   ; ETA_F=0   ; ETA_M=0   ; ETA_T=0  ; ETA_TERMINAL=0 ; SAMPLE_SIZE=0;
       SIGMA_TAG_REPORT=0 ; SIGMA_TAG_SURV=0 ; SIGMA_TAG_LOSS=0 ; ETA_TAG_REPORT=0 ; ETA_TAG_SURV=0 ; ETA_TAG_LOSS=0
       SIGMA_TAG_NOMIX2=0 ; SIGMA_TAG_NOMIX=0 ; ETA_TAG_NOMIX=0 ;  N_Qs=0
       OPEN(10,FILE=INFILE(1),STATUS='OLD',ERR=999)
@@ -97,6 +97,8 @@
             WRITE(*,*) 'YOU HAVE CHOSEN NOT TO USE THE INDEX FOR SURVEY/FISHERY ',G
           ELSE IF( (BIO_EFFORT(g,box)==7 .OR. BIO_EFFORT(g,box)==8) .AND. MODEL_TYPE==1 ) THEN
             WRITE(*,*) 'ERROR: PROPORTIONS CAN ONLY BE ESTIMATED WITH THE OVERLAP MODEL (2). CHECK SPECIFICATIONS FOR INDEX ',G  ;  STOP
+          ELSE IF( (BIO_EFFORT(g,box)==9 .OR. BIO_EFFORT(g,box)==10) .AND. EXPANDED_PLUSGROUP<=PLUSGROUP ) THEN
+            WRITE(*,*) 'WARNING: INDICES OF MEAN SIZE ARE NOT USEFUL UNLESS APPLIED TO AN EXPANDED PLUS GROUP. CHECK PLUSGROUP AGE'
         ENDIF
         IF((SEL_TYPE(g,box)>1).AND.(AGE_EFFORT(1,g,box)>PLUSGROUP)) THEN
           WRITE(*,*) 'ERROR: SELECTIVITY MUST BE FIXED TO 1.0 WHEN THE INDEX APPLIES ONLY TO AGES OLDER THAN THE PLUS GROUP.'
@@ -113,6 +115,12 @@
         Y=Y-DISPLAYYEAR+1 ; CALL CHECKDIMENSION(Y,Ys,LASTYEAR,'YEAR      ',RECORD)
         EFFORT_DATA(g,box,y) = TEMP(1) ; SIGMA_EFFORT(g,box,y) = TEMP(2) ; EFFORT_DATA_STORE(g,box,y)=TEMP(1)
         IF(PDF_EFFORT(g,box)==1 .and. BIO_EFFORT(g,box)>2 .AND. BIO_EFFORT(g,box)<7) EFFORT_DATA(g,box,y)=EFFORT_DATA(g,box,y)+0.00001
+        IF( (BIO_EFFORT(g,box)==7.OR.BIO_EFFORT(g,box)==8) .AND. EFFORT_DATA_STORE(g,box,y)>1.0) THEN
+          ! Stock composition data, TEMP(1), is number of fish, not proportion, and TEMP(2) is the sample size
+          SIGMA_EFFORT(g,box,y) = -sqrt(TEMP(1)*(1.-TEMP(1)/TEMP(2))) ! Negative value is interpreted later as a std. dev.
+          SAMPLE_SIZE(g,box,y)=TEMP(2)
+        ENDIF
+
         GOTO 40
      
 41      IF((CV_OVERIDE>0.00001 .AND. INT(CV_OVERIDE)/=999) .or. CV_OVERIDE<-0.00001) SIGMA_EFFORT=CV_OVERIDE
@@ -243,7 +251,15 @@
       WRITE(*,*) 'FINISHED READING DATA FILE' ; WRITE(*,'(i5,a21)') RECORD,' RECORDS READ IN FILE'
       IF(COUNTNEGS<5) THEN ; WRITE(*,*) 'INPUT ERROR: Too few categories in data file (you are missing some -1)';  ENDIF
       IF(COUNTNEGS<5) THEN ; WRITE(12,*) 'INPUT ERROR: Too few categories in data file (you are missing some -1)'; PAUSE;STOP; ENDIF
-      IF(PDF_TAG>0) CALL READ_TAG ; CLOSE(10) ; RETURN
+      IF(PDF_TAG>0) CALL READ_TAG ;
+      CLOSE(10)
+      OPEN(10,FILE='GROWTH.DAT',STATUS='OLD',ERR=998)  ! Optional growth parameters
+997   READ(10,END=998) BOX,G,GROWTH(BOX,g)%CURVE,GROWTH(BOX,g)%LINF,GROWTH(BOX,g)%K,GROWTH(BOX,g)%T0,GROWTH(BOX,g)%M,   &
+                       GROWTH(BOX,g)%WA,GROWTH(BOX,g)%WB,GROWTH(BOX,g)%DATE
+        GROWTH(BOX,g)%T0=GROWTH(BOX,g)%T0+GROWTH(BOX,g)%DATE/12.0
+      GOTO 997
+998   CLOSE(10);
+      RETURN
 
 999   WRITE(*,'(1X,A21,A120)') 'ERROR: The data file ',INFILE(1)
       WRITE(*,'(8X,A55)') 'does not exist or is being used by another application.'
@@ -766,9 +782,9 @@
 !-----------------------------------------------------------------------------
       USE STATISTICS ; USE DATUM ; USE PARAMETERS, ONLY : MODEL_TYPE, OPTION, PDF_TAG, SEED, NBOX
       IMPLICIT NONE
-      INTEGER Y,G,A,S,LAST,YOUNGER,OTH,NYR
+      INTEGER Y,G,A,S,LAST,YOUNGER,OTH,NYR,IC
       REAL (KIND=8) :: Z(Bs,0:As,0:Ys),SURV(Bs,0:As,0:Ys),NTEMP(Bs,0:As,0:Ys),NTIME,TEMP(2),SUMTEMP(2), &
-                       F2(2),fvec2(2),df2(2,2),RAN1,STD,AVE,MAX_EFF,SUM_NTIME
+                       F2(2),fvec2(2),df2(2,2),RAN1,STD,AVE,MAX_EFF,SUM_NTIME,TG
       LOGICAL CHECK
       EXTERNAL DIFFUSION_CATCH, DIFFUSION_PLUS, OVERLAP_CATCH, OVERLAP_PLUS, RAN1
       ssb=0.d0 
@@ -963,19 +979,34 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       IF(EXPANDED_PLUSGROUP>PLUSGROUP) THEN
 
-!       equilibrium approximation in first year
-        y=FIRSTYEAR
-        DO BOX=1,NBOX
-          sumtemp(box)=1; Ntemp(box,plusgroup,y)=1;
-          DO a = PLUSGROUP+1,EXPANDED_PLUSGROUP
-            age=a-1; IF(a>PLUSGROUP) age=PLUSGROUP
-            Ntemp(box,a,y)=Ntemp(box,a-1,y)*SURV(box,age,y);
-            IF(a==EXPANDED_PLUSGROUP) Ntemp(box,a,y)=Ntemp(box,a,y)/(1.0-SURV(box,plusgroup,y))
+!       Equilibrium approximation in first year
+
+        y=FIRSTYEAR;
+        ! start equilibrium calculation with appropriate magnitude of each stock/zone (will later be rescaled)
+        IF(MODEL_TYPE==1) THEN ! diffusion and no-mixing models
+            Ntemp(1,plusgroup,y)=N_AREA(1,plusgroup,y); Ntemp(nbox,plusgroup,y)=N_AREA(nbox,plusgroup,y);
+          ELSE ! overlap model
+            Ntemp(1,plusgroup,y)=N_STOCK(1,plusgroup,y); Ntemp(nbox,plusgroup,y)=N_STOCK(nbox,plusgroup,y);
+        ENDIF
+        sumtemp(1)=Ntemp(1,plusgroup,y); sumtemp(nbox)=Ntemp(nbox,plusgroup,y)
+        ! cycle through age classes in first year
+        DO a = PLUSGROUP+1,EXPANDED_PLUSGROUP
+          DO BOX=1,NBOX
+            IF(BOX==1) THEN ; OTH=2 ; ELSE ; OTH=1 ; ENDIF
+            IF(MODEL_TYPE==1) THEN ! diffusion and no-mixing models
+                Ntemp(box,a,y)=(Ntemp(box,a-1,y)*(1-T(box,PLUSGROUP,y))+Ntemp(oth,a-1,y)*T(oth,PLUSGROUP,y))*SURV(box,PLUSGROUP,y)
+              ELSE ! overlap model
+                Ntemp(box,a,y)=Ntemp(box,a-1,y)*((1-T(box,PLUSGROUP,y))*SURV(box,PLUSGROUP,y)+T(box,PLUSGROUP,y)*SURV(oth,PLUSGROUP,y))
+            ENDIF
+            IF(a==EXPANDED_PLUSGROUP) Ntemp(box,a,y)=Ntemp(box,a,y)/(1.0-SURV(box,plusgroup,y)) ! Expanded plus-group is itself a plus-group (calculation is only approximate for mixing models)
             sumtemp(box)=sumtemp(box)+Ntemp(box,a,y)
           END DO
+        END DO
+        ! rescale age classes so their sum equals the VPA estimates for the plus-group group
+        DO BOX=1,NBOX
           IF(MODEL_TYPE==1) THEN ! Diffusion (no-memory) and single-stock model
-              temp(box)=N_AREA(box,plusgroup,y)
-              DO a = PLUSGROUP,EXPANDED_PLUSGROUP; N_AREA(box,a,y)=temp(box)*Ntemp(box,a,y)/sumtemp(box); END DO
+              temp(box)=N_AREA(box,plusgroup,y) ! VPA estimates of abundance in plus-group by area
+              DO a = PLUSGROUP,EXPANDED_PLUSGROUP; N_AREA(box,a,y)=temp(box)*Ntemp(box,a,y)/sumtemp(box); END DO ! pro-rate so abundance in expanded plusgroup same as VPA estimate
             ELSE
               temp(box)=N_STOCK(box,plusgroup,y)
               DO a = PLUSGROUP,EXPANDED_PLUSGROUP; N_STOCK(box,a,y)=temp(box)*Ntemp(box,a,y)/sumtemp(box); END DO
@@ -983,6 +1014,7 @@
         END DO
 
 !       track cohorts in subsequent years
+
         DO Y=FIRSTYEAR,LASTYEAR
           DO BOX=1,NBOX
             IF(BOX==1) THEN ; OTH=2 ; ELSE ; OTH=1 ; ENDIF
@@ -1037,9 +1069,38 @@
               SUM_NTIME=0
               DO 33 A=AGE_EFFORT(1,g,box),AGE_EFFORT(2,g,box)
                 age=a; IF(age>PLUSGROUP) age=PLUSGROUP
-                IF(SEASON_EFFORT(g,box)<0) THEN ; NTIME=(1-SURV(box,age,y))/Z(box,age,y)
-                  ELSE ; NTIME=SURV(box,age,y)**(SEASON_EFFORT(g,box)/12.d0)
+                IF(SEASON_EFFORT(g,box)<0) THEN ; NTIME=(1-SURV(box,age,y))/Z(box,age,y) ;
+                  ELSE ; TG=SEASON_EFFORT(g,box)/12.d0 ;  NTIME=SURV(box,age,y)**TG
                 ENDIF
+                IF(BIO_EFFORT(g,box)==9 .or. BIO_EFFORT(g,box)==10) THEN
+                  IF(SEASON_EFFORT(g,box)<0) THEN  ! numberical approx. to average weight during year
+                      PRED_LENGTH(G,BOX,A,Y)=0; PRED_WEIGHT(G,BOX,A,Y)=0; STD=0
+                      DO IC=1,10
+                        TG=(DBLE(IC)-0.5)/10
+                        STD=STD+SURV(box,age,y)**TG
+                        IF(GROWTH(BOX,G)%CURVE==1) THEN  ! von Bertalanffy / Chapman-Richards growth
+                          AVE=GROWTH(BOX,G)%LINF*(1.0-GROWTH(BOX,G)%M*EXP(-GROWTH(BOX,G)%K*               &
+                                                 (A-GROWTH(BOX,G)%T0)+TG))**(1.0/GROWTH(BOX,G)%M)
+                          PRED_LENGTH(G,BOX,A,Y)=PRED_LENGTH(G,BOX,A,Y)+AVE*SURV(box,age,y)**TG
+                          PRED_WEIGHT(G,BOX,A,Y)=PRED_WEIGHT(G,BOX,A,Y)+(GROWTH(BOX,G)%WA*AVE**GROWTH(BOX,G)%WB)*SURV(box,age,y)**TG
+                         ELSEIF(GROWTH(BOX,G)%CURVE==2) THEN  ! Gompertz growth
+                          PRED_WEIGHT(G,BOX,A,Y)=PRED_WEIGHT(G,BOX,A,Y)+GROWTH(BOX,G)%LINF*              &
+                                                  EXP(-1.0*EXP(-GROWTH(BOX,G)%K*(A-GROWTH(BOX,G)%T0+TG)))*SURV(box,age,y)**TG
+                        ENDIF
+                      END DO
+                      PRED_LENGTH(G,BOX,A,Y)=PRED_LENGTH(G,BOX,A,Y)/STD
+                      PRED_WEIGHT(G,BOX,A,Y)=PRED_WEIGHT(G,BOX,A,Y)/STD
+                    ELSE
+                      IF(GROWTH(BOX,G)%CURVE==1) THEN  ! von Bertalanffy / Chapman-Richards growth
+                          PRED_LENGTH(G,BOX,A,Y)=GROWTH(BOX,G)%LINF*(1.0-GROWTH(BOX,G)%M*EXP(-GROWTH(BOX,G)%K*               &
+                                                 (A-GROWTH(BOX,G)%T0)+TG))**(1.0/GROWTH(BOX,G)%M)
+                          PRED_WEIGHT(G,BOX,A,Y)=GROWTH(BOX,G)%WA*PRED_LENGTH(G,BOX,A,Y)**GROWTH(BOX,G)%WB
+                        ELSEIF(GROWTH(BOX,G)%CURVE==2) THEN  ! Gompertz growth
+                          PRED_WEIGHT(G,BOX,A,Y)=GROWTH(BOX,G)%LINF*EXP(-1.0*EXP(-GROWTH(BOX,G)%K*(A-GROWTH(BOX,G)%T0+TG)))
+                      ENDIF
+                  ENDIF
+                ENDIF
+
                 IF(BIO_EFFORT(g,box)==2) THEN  ! index is biomass-based
                     NTIME=NTIME*WEIGHT_CATCH(g,box,age,y) ! note: for overlap model one could modify to allowed weights by stock
                   ELSEIF(BIO_EFFORT(g,box)==3 .OR. BIO_EFFORT(g,box)==5) THEN ! index is in terms of fishing mortality rate
@@ -1051,9 +1112,15 @@
                   ELSEIF(BIO_EFFORT(g,box)==8) THEN ! index is the proportion of biomass in area that originated in box
                     NTIME=NTIME*WEIGHT_CATCH(g,box,age,y)
                     SUM_NTIME=SUM_NTIME+SEL_EFFORT(g,box,a,y)*NTIME*N_STOCK(box,a,y)*(1-T(box,age,y))
+                  ELSEIF(BIO_EFFORT(g,box)==9) THEN ! index is the mean length of catch of plusgroup
+                    SUM_NTIME=SUM_NTIME+SEL_EFFORT(g,box,a,y)*NTIME*NTEMP(box,a,y)
+                    NTIME=NTIME*PRED_LENGTH(g,box,a,y)
+                  ELSEIF(BIO_EFFORT(g,box)==10) THEN ! index is the mean weight of catch of plusgroup
+                    SUM_NTIME=SUM_NTIME+SEL_EFFORT(g,box,a,y)*NTIME*NTEMP(box,a,y)
+                    NTIME=NTIME*PRED_WEIGHT(g,box,a,y)
                 ENDIF
-                EFFORT(g,box,y)=EFFORT(g,box,y)+SEL_EFFORT(g,box,a,y)*NTIME*NTEMP(box,a,y)
-                ! write(*,*) g,y,effort(g,box,y),NTIME,NTEMP(box,a,y),SEL_EFFORT(g,box,a,y)
+                EFFORT(g,box,y)=EFFORT(g,box,y)+SEL_EFFORT(g,box,a,y)*NTIME*NTEMP(box,a,y)   ! NTEMP contains number in area
+
 !               hardwire
                 IF(BOTH_STOCKS(g,box)>0) THEN ! add abundance in other area as well (i.e., index represents both areas)
                   IF(SEASON_EFFORT(g,box)<0) THEN ; NTIME=(1.0-SURV(oth,age,y))/Z(oth,age,y)
@@ -1062,18 +1129,23 @@
                   IF(BIO_EFFORT(g,box)==2) NTIME=NTIME*WEIGHT_SSB(oth,age,y) ! this is a patch, better to specify g in WEIGHT_CATCH(g,oth... )
                   EFFORT(g,box,y)=EFFORT(g,box,y)+SEL_EFFORT(g,box,a,y)*NTIME*NTEMP(oth,a,y)
                 ENDIF
+
 33            CONTINUE
+
               IF(BIO_EFFORT(g,box)>2 .AND. BIO_EFFORT(g,box)<7) THEN ! F or Z indices
                 EFFORT(g,box,y)=EFFORT(g,box,y)/SUM_NTIME
                 IF(BIO_EFFORT(g,box)<5) MAX_EFF=MAX(MAX_EFF,EFFORT(g,box,y))
               ENDIF
+
             ENDIF
+
             IF(BIO_EFFORT(g,box)==7 .or. BIO_EFFORT(g,box)==8) THEN
               IF(EFFORT_DATA_STORE(g,box,y)>0 .AND. EFFORT_DATA(g,box,y)>0) THEN
-                if(SUM_NTIME/EFFORT(g,box,y)>1) WRITE(*,*) g,box,y,EFFORT(g,box,y),SUM_NTIME,SUM_NTIME/EFFORT(g,box,y)
+                IF(SAMPLE_SIZE(G,BOX,Y)>0)  SUM_NTIME = SUM_NTIME*SAMPLE_SIZE(G,BOX,Y)
                 EFFORT(g,box,y)=SUM_NTIME/EFFORT(g,box,y)
               ENDIF
             ENDIF
+            IF(BIO_EFFORT(g,box)==9 .or. BIO_EFFORT(g,box)==10) EFFORT(g,box,y)=EFFORT(g,box,y)/SUM_NTIME
 
 32        CONTINUE ! year
           IF(BIO_EFFORT(g,box)==3 .or. BIO_EFFORT(g,box)==4) THEN
@@ -1212,7 +1284,7 @@
 !------------------------------------------------------------------------------
       USE STATISTICS ; USE PARAMETERS ; USE DATUM, ONLY : T_PROPORTION
       IMPLICIT NONE
-      INTEGER OTH,j
+      INTEGER OTH,j,OTH_S
       REAL (KIND=8) :: BOTTOM,z1,z2,F1,S1,S2,T1,T2,T_mod,DELTA
       RECAPTURES=0; RECOVERIES=0;
 
@@ -1272,7 +1344,7 @@
 
 !             {Diffusion model}
               IF(YEAR==TC(j)%Yr) THEN ;
-!               {assume fish that had moved to the area where tagging occurred effectively recruited to that local population}
+!               {assume fish that had moved to the area where tagging occurred effectively recruited to that local population, ignore stock origin info}
                 N_TAGS(j,box,year)=TC(j)%N*TAG_SURV(j); N_TAGS(j,oth,year)=0
               ENDIF
               N_TAGS(j,box,year+1)=N_TAGS(j,box,year)*(1.0-T1)+ N_TAGS(j,oth,year)*T2
@@ -1290,10 +1362,16 @@
 
 !             {Overlap model}
               IF(YEAR==TC(j)%Yr) THEN ;
-                !assume fish from each stock are tagged in proportion to their relative abundance in the zone (box)
-                BOTTOM=N_STOCK(box,age,year)*(1-T(box,age,year))+N_STOCK(oth,age,year)*T(oth,age,year)
-                N_TAGS(j,box,year)=TC(j)%N*TAG_SURV(j)*N_STOCK(box,age,year)*(1-T(box,age,year))/BOTTOM
-                N_TAGS(j,oth,year)=TC(j)%N*TAG_SURV(j)*N_STOCK(oth,age,year)*T(oth,age,year)/BOTTOM
+                IF( NBOX>0 .AND. (TC(j)%Sr>0 .OR. TC(j)%Sr<3) ) THEN
+                    !use stock id information
+                    IF(TC(j)%Sr==1) THEN ; OTH_s=2 ; ELSE ; OTH_s=1 ; ENDIF
+                    N_TAGS(j,TC(j)%Sr,year)=TC(j)%N*TAG_SURV(j); N_TAGS(j,oth_s,year)=0
+                  ELSE
+                    !assume fish from each stock are tagged in proportion to their relative abundance in the zone (box)
+                    BOTTOM=N_STOCK(box,age,year)*(1-T(box,age,year))+N_STOCK(oth,age,year)*T(oth,age,year)
+                    N_TAGS(j,box,year)=TC(j)%N*TAG_SURV(j)*N_STOCK(box,age,year)*(1-T(box,age,year))/BOTTOM
+                    N_TAGS(j,oth,year)=TC(j)%N*TAG_SURV(j)*N_STOCK(oth,age,year)*T(oth,age,year)/BOTTOM
+                ENDIF
                 T2=1.-(1.-T2)*T_proportion(T_mod_month(j))
               ENDIF
               RECAPTURES(j,box,year)=TAG_REPORT(j,box)*F1*(1.0-S1)/Z1*( N_TAGS(j,box,year)*(1.-T1) + N_TAGS(j,oth,year)*T2 )
@@ -2069,6 +2147,8 @@
               CASE (6) ;     CH2='total mortality rate  '
               CASE (7) ;     CH2='proportion- numbers   '
               CASE (8) ;     CH2='proportion- weight    '
+              CASE (9) ;     CH2='mean length           '
+              CASE (10) ;     CH2='mean weight          '
               CASE DEFAULT ; CH2='numbers               '
           END SELECT
           IF(SEASON_EFFORT(g,box)<0) THEN

@@ -1,5 +1,5 @@
 !
-! Last change:  CEP  10 Sep 2010   12:32 pm
+! Last change:  CEP  13 Apr 2017   12:29 pm
 ! program VPA-2BOX.F90 , VERSION 4.01
 ! A sequential population analysis tool
 ! programmed by Clay E. Porch in FORTRAN 90
@@ -54,7 +54,8 @@
                          SIGMA_Q(Gs,Bs,0:Ys),INDEX_MEAN(Gs,Bs),WEIGHT_CATCH(Gs,Bs,0:As,0:Ys),FECUNDITY(Bs,0:As), &
                          WEIGHT_SSB(Bs,0:As,0:Ys),RECOVERY_DATA(Ts,BS),RECAPTURE_DATA(Ts,BS,YS), &
                          EFFORT_DATA_STORE(Gs,Bs,0:Ys), SUMRDATA(Ts),SIGMA_TAG_NOMIX(1000), &
-                         SIGMA_TAG_NOMIX2(1000),T_PROPORTION(12),PSEL_MEAN(Gs,Bs,0:Ys)
+                         SIGMA_TAG_NOMIX2(1000),T_PROPORTION(12),PSEL_MEAN(Gs,Bs,0:Ys),SAMPLE_SIZE(Gs,Bs,0:Ys), &
+                         PRED_WEIGHT(Gs,Bs,0:As,0:Ys), PRED_LENGTH(Gs,Bs,0:As,0:Ys)
         INTEGER :: PDF_CATCH(Bs),PDF_EFFORT(Gs,Bs),BIO_EFFORT(Gs,Bs),BIO_CATCH(Bs), &
                    PDF_STOCKRECRUIT,SEL_TYPE(Gs,Bs),PDF_FRATIO(Bs),PDF_TERMINAL(Bs),PDF_M(Bs),PDF_T(Bs), &
                    BOTH_STOCKS(Gs,Bs),IGNORE_RECRUIT(2),N_DATA,N_Qs,NPI(GS,BS)
@@ -63,8 +64,13 @@
 
       MODULE STATISTICS
         USE DIMS
+        TYPE GRWTH
+          INTEGER :: CURVE
+          REAL (KIND=8) :: LINF,K,T0,M,WA,WB,DATE
+        END TYPE GRWTH
+        TYPE (GRWTH), SAVE :: GROWTH(2,0:100)
         TYPE TAGCOHORT
-          INTEGER :: Br,Yr
+          INTEGER :: Br,Sr,Yr
           REAL (KIND=8) :: Mr
           INTEGER :: Ye
           REAL (KIND=8) :: Me
@@ -120,7 +126,7 @@
                          'MINUS16.SPD','MINUS17.SPD','MINUS18.SPD','MINUS19.SPD','MINUS20.SPD'/
       WRITE(*,'(/,/,/,/,/,/,/,/,/,/,/,/,/,/,/,/,/,/,/,/,/,/)')
       WRITE(*,*) '+-------------------------------------------------------------------------+'
-      WRITE(*,*) '| Program VPA-2BOX.F90, Version 4.01 (August 19, 2010)                        |'
+      WRITE(*,*) '| Program VPA-2BOX.F90, Version 4.01 (April 15, 2017)                        |'
       WRITE(*,*) '|                                                                         |'
       WRITE(*,*) '| A virtual population analysis tool that uses catch-at-age, indices of   |'
       WRITE(*,*) '| abundance, indices of mortality rates, and tag-recoveries to estimate   |'
