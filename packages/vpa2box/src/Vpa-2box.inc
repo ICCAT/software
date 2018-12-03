@@ -10,7 +10,7 @@
       CHARACTER (LEN=10) :: CH
       CHARACTER (LEN=1) :: CH1
 !     initialize all data (negative values mean no data)
-      CATCH_DATA = 1.0 ; EFFORT_DATA = -9.0 ; SEL_EFFORT = 1.0 ; PSEL = -1.0 ; INDEX_MEAN=0 ; PDF_EFFORT=0 ; EFFORT_DATA_STORE=-1.0
+      CATCH_DATA = 1.0 ; EFFORT_DATA = -9.0 ; SEL_EFFORT = 1.0 ; PSEL = -1.0 ; INDEX_MEAN=1 ; PDF_EFFORT=0 ; EFFORT_DATA_STORE=-1.0
       SIGMA_Q=0 ; SIGMA_F=0 ; SIGMA_M=0 ; SIGMA_T=0 ; SIGMA_TERMINAL=0 ; WEIGHT_CATCH=0 ; WEIGHT_SSB=0
       ETA_Q=0   ; ETA_F=0   ; ETA_M=0   ; ETA_T=0  ; ETA_TERMINAL=0 ; SAMPLE_SIZE=0;
       SIGMA_TAG_REPORT=0 ; SIGMA_TAG_SURV=0 ; SIGMA_TAG_LOSS=0 ; ETA_TAG_REPORT=0 ; ETA_TAG_SURV=0 ; ETA_TAG_LOSS=0
@@ -95,6 +95,9 @@
         IF(ITEMP(2)<0 .AND. NBOX>1) THEN ; BOTH_STOCKS(g,box)=1 ; ELSE ; BOTH_STOCKS(g,box)=-1 ; ENDIF
         IF(PDF_EFFORT(g,box) <= 0) THEN
             WRITE(*,*) 'YOU HAVE CHOSEN NOT TO USE THE INDEX FOR SURVEY/FISHERY ',G
+          ELSE IF( (BIO_EFFORT(g,box)==3 .OR. BIO_EFFORT(g,box)==4) .AND. PDF_EFFORT(g,box)==1 ) THEN
+            PDF_EFFORT(g,box)=2 ;
+            WRITE(*,*) 'WARNING: MORTALITY DEVIATIONS CAN BE NEGATIVE AND THEREFORE CANNOT BE LOGNORMAL DISTRIBUTED FOR INDEX ',G
           ELSE IF( (BIO_EFFORT(g,box)==7 .OR. BIO_EFFORT(g,box)==8) .AND. MODEL_TYPE==1 ) THEN
             WRITE(*,*) 'ERROR: PROPORTIONS CAN ONLY BE ESTIMATED WITH THE OVERLAP MODEL (2). CHECK SPECIFICATIONS FOR INDEX ',G  ;  STOP
           ELSE IF( (BIO_EFFORT(g,box)==9 .OR. BIO_EFFORT(g,box)==10) .AND. EXPANDED_PLUSGROUP<=PLUSGROUP ) THEN
@@ -113,19 +116,29 @@
         BACKSPACE(10)
         READ(10,*) G,Y,TEMP(1),TEMP(2)
         Y=Y-DISPLAYYEAR+1 ; CALL CHECKDIMENSION(Y,Ys,LASTYEAR,'YEAR      ',RECORD)
-        EFFORT_DATA(g,box,y) = TEMP(1) ; SIGMA_EFFORT(g,box,y) = TEMP(2) ; EFFORT_DATA_STORE(g,box,y)=TEMP(1)
-        IF(PDF_EFFORT(g,box)==1 .and. BIO_EFFORT(g,box)>2 .AND. BIO_EFFORT(g,box)<7) EFFORT_DATA(g,box,y)=EFFORT_DATA(g,box,y)+0.00001
-        IF( (BIO_EFFORT(g,box)==7.OR.BIO_EFFORT(g,box)==8) .AND. EFFORT_DATA_STORE(g,box,y)>1.0) THEN
-          ! Stock composition data, TEMP(1), is number of fish, not proportion, and TEMP(2) is the sample size
-          SIGMA_EFFORT(g,box,y) = -sqrt(TEMP(1)*(1.-TEMP(1)/TEMP(2))) ! Negative value is interpreted later as a std. dev.
-          SAMPLE_SIZE(g,box,y)=TEMP(2)
+        EFFORT_DATA(g,box,y) = TEMP(1) ;  EFFORT_DATA_STORE(g,box,y) = TEMP(1); SIGMA_EFFORT(g,box,y) = TEMP(2) ;
+        IF( (BIO_EFFORT(g,box)>2 .AND. BIO_EFFORT(g,box)<5) .AND. ABS( EFFORT_DATA(g,box,y))<1.0d-32 ) REF_YEAR=Y ; ! A true zero should occur where Max Zy - Zy = 0
+        IF( BIO_EFFORT(g,box)==7.OR.BIO_EFFORT(g,box)==8 ) THEN  ! Stock composition data
+          IF( EFFORT_DATA_STORE(g,box,y)>1.0 ) THEN
+              ! TEMP(1) is number of fish, not proportion, and TEMP(2) is the sample size
+              SIGMA_EFFORT(g,box,y) = -sqrt(MAX(TEMP(1),1)*(1.-MAX(TEMP(1),1)/TEMP(2))) ! Negative value is interpreted later as a std. dev.
+              SAMPLE_SIZE(g,box,y)=TEMP(2)
+            ELSE
+              ! TEMP(1) is  proportion
+              IF(TEMP(2)>2) THEN ! Compute std. dev. from sample size and convert observations from proportion to number (otherwise use proportions and Sigma_ffort = temp(2))
+                  SIGMA_EFFORT(g,box,y) = -sqrt(MAX(TEMP(1),0.1)*TEMP(2)*(1.-MAX(TEMP(1),0.1))) ! Negative value is interpreted later as a std. dev.
+                  SAMPLE_SIZE(g,box,y)=TEMP(2); EFFORT_DATA(g,box,y) = TEMP(2)*TEMP(1) ;  EFFORT_DATA_STORE(g,box,y) =TEMP(2)*TEMP(1);
+              ENDIF
+          ENDIF
+        ENDIF
+        IF(BIO_EFFORT(g,box)<3) THEN
+          IF( (CV_OVERIDE>0.00001 .AND. INT(CV_OVERIDE)/=999) .or. CV_OVERIDE<-0.00001) SIGMA_EFFORT(g,box,y)=CV_OVERIDE
         ENDIF
 
         GOTO 40
      
-41      IF((CV_OVERIDE>0.00001 .AND. INT(CV_OVERIDE)/=999) .or. CV_OVERIDE<-0.00001) SIGMA_EFFORT=CV_OVERIDE
 !       read effort selectivity data
-        CALL BLANK(10,RECORD)
+41      CALL BLANK(10,RECORD)
         READ(10,*) G
         IF(G.LE.0) THEN ; COUNTNEGS=COUNTNEGS+1 ; GOTO 49; ELSE ; CALL CHECKDIMENSION(G,Gs,NGEARS(BOX),'FISHERY   ',RECORD) ; ENDIF
         BACKSPACE(10)
@@ -201,11 +214,12 @@
         END DO
 
 !       scale indices by their mean
-        IF(SCALEs.GT.0) THEN ! Scale indices by their mean (geometric in case of lognormal model)
+        
+        IF(SCALEs > 0) THEN ! Scale abundance indices by their mean (geometric in case of lognormal model)
           write(*,*) 'Scaling indices of abundance by their mean'
           DO G=1,NGEARS(box)
-            IF(PDF_EFFORT(g,box)==12) exit
-            COUNT=0
+            IF(PDF_EFFORT(g,box)==12 .OR. BIO_EFFORT(g,box)>2) CYCLE
+            COUNT=0; INDEX_MEAN(g,box)=0;
             DO 83 Y=1,LASTYEAR
               IF(PDF_EFFORT(g,box)>1 .and. EFFORT_DATA(g,box,y)>=0) THEN
                   INDEX_MEAN(g,box)=INDEX_MEAN(g,box)+EFFORT_DATA(g,box,y) ; COUNT=COUNT+1
@@ -215,16 +229,13 @@
 83          CONTINUE
             INDEX_MEAN(g,box)=INDEX_MEAN(g,box)/COUNT
             IF(PDF_EFFORT(g,box)==1) INDEX_MEAN(g,box)=DEXP(INDEX_MEAN(g,box))
-            IF(BIO_EFFORT(g,box)>6) INDEX_MEAN(g,box)=1.0
             DO 84 Y=1,LASTYEAR
               IF(EFFORT_DATA(g,box,y)>0 .OR. (PDF_EFFORT(g,box)>1 .AND. EFFORT_DATA(g,box,y)>=0)) THEN
                 EFFORT_DATA(g,box,y)=EFFORT_DATA(g,box,y)/INDEX_MEAN(g,box)  
                 EFFORT_DATA_STORE(g,box,y)=EFFORT_DATA(g,box,y)/INDEX_MEAN(g,box)
               ENDIF
 84          CONTINUE
-          END DO
-         ELSE ! Do not scale by the mean
-          INDEX_MEAN=1
+          END DO !
         ENDIF
 
       IF(BOX==2 .AND. MODEL_TYPE==0) THEN ! Combine statistics for both areas  
@@ -550,7 +561,7 @@
 
 !       {fraction of recaptured tags that are reported}
         DO A=1,N_REPT_PARS
-          IF(ICALL==0 .and. a==1 .AND. ((PARM_SPECS(I,4)<0 .and. PARM_SPECS(I,4)>-1.0) .or. &
+          IF(ICALL==0 .and. a==1 .AND. ((PARM_SPECS(I,4)<0 .AND. PARM_SPECS(I,4)>-1.0) .OR. &
             (PARM_SPECS(I,4)>0.0001 .AND. PARM_SPECS(I,4)<0.3))) GOTO 998
           CALL GETPAR(I,K,X,NPARM,REPT_PAR(a),ETA_TAG_report(a),SIGMA_TAG_REPORT(a))
         END DO
@@ -562,7 +573,7 @@
 
 !       {inflation factors owing to nonmixing}
         DO A=1,N_MIX_PARS
-          IF(ICALL==0. and. a==1 .AND. ((PARM_SPECS(I,4)<0 .and. PARM_SPECS(I,4)>-1.0) .or. &
+          IF(ICALL==0 .AND. a==1 .AND. ((PARM_SPECS(I,4)<0 .and. PARM_SPECS(I,4)>-1.0) .OR. &
             (PARM_SPECS(I,4)>0.0001 .AND. PARM_SPECS(I,4)<0.3))) GOTO 999
           CALL GETPAR(I,K,X,NPARM,NMIX_PAR(a),ETA_TAG_NOMIX(a),SIGMA_TAG_NOMIX(a))
         END DO
@@ -1059,7 +1070,7 @@
       DO 30 BOX=1,NBOX
         IF(BOX==1) THEN ; OTH=2 ; ELSE ; OTH=1 ; ENDIF
         DO 31 G=1,NGEARS(box)
-          IF(PDF_EFFORT(g,box)==0) GOTO 31 ; GEAR=g ; MAX_EFF=-1
+          IF(PDF_EFFORT(g,box)==0) GOTO 31 ; GEAR=g ; MAX_EFF=0; 
           DO 32 Y = FIRSTYEAR,LASTYEAR
             IF(EFFORT_DATA_STORE(g,box,y)>0 .OR. (PDF_EFFORT(g,box)>1 .AND. EFFORT_DATA_STORE(g,box,y)>-9)) THEN
               IF(SEL_TYPE(g,box)>1) CALL GET_SELECTIVITY ! compute from fractional catches
@@ -1134,7 +1145,7 @@
 
               IF(BIO_EFFORT(g,box)>2 .AND. BIO_EFFORT(g,box)<7) THEN ! F or Z indices
                 EFFORT(g,box,y)=EFFORT(g,box,y)/SUM_NTIME
-                IF(BIO_EFFORT(g,box)<5) MAX_EFF=MAX(MAX_EFF,EFFORT(g,box,y))
+                IF(BIO_EFFORT(g,box)<5 .and. y==REF_YEAR) MAX_EFF=EFFORT(g,box,y)
               ENDIF
 
             ENDIF
@@ -1160,7 +1171,7 @@
             IF(BIO_EFFORT(g,box)>6) Q_EFFORT(g,box,y)=1.0
             IF(EFFORT_DATA_STORE(g,box,y)>0 .OR. (PDF_EFFORT(g,box)>1 .AND. EFFORT_DATA_STORE(g,box,y)>-9)) THEN
               EFFORT(g,box,y)=EFFORT(g,box,y)*Q_EFFORT(g,box,y)
-              IF(PDF_EFFORT(g,box)==1.AND.BIO_EFFORT(g,box)>2.AND.BIO_EFFORT(g,box)<7) EFFORT(g,box,y)=EFFORT(g,box,y)+0.00001
+!              IF(PDF_EFFORT(g,box)==1.AND.BIO_EFFORT(g,box)>2.AND.BIO_EFFORT(g,box)<5) EFFORT(g,box,y)=EFFORT(g,box,y)+0.00001
             ENDIF
 36        CONTINUE
           IF(PDF_EFFORT(g,box)==12) THEN
@@ -1212,11 +1223,7 @@
           IF(PDF_EFFORT(g,box).EQ.1) THEN
 !             {cpue is lognormally distributed}
               IF(EFFORT_DATA_STORE(g,box,y).GT.0 .AND. EFFORT(g,box,y)>0) THEN
-                IF(BIO_EFFORT(g,box)==3 .or. BIO_EFFORT(g,box)==4) THEN ! the year at Max_eff is excluded
-                    CROSS=CROSS+DLOG(EFFORT_DATA(g,box,y)/(EFFORT(g,box,y)+0.0001))/SIG2 ; SUMN=SUMN+1.d0/SIG2
-                  ELSE
-                    CROSS=CROSS+DLOG(EFFORT_DATA(g,box,y)/EFFORT(g,box,y))/SIG2 ; SUMN=SUMN+1.d0/SIG2
-                ENDIF
+                  CROSS=CROSS+DLOG(EFFORT_DATA(g,box,y)/EFFORT(g,box,y))/SIG2 ; SUMN=SUMN+1.d0/SIG2
               ENDIF
             ELSEIF(PDF_EFFORT(g,box)==4) THEN
 !             {cpue is Poisson distributed}
@@ -1907,6 +1914,7 @@
             IF((PDF_EFFORT(g,box)>1 .AND. EFFORT_DATA(g,box,y)>-9) .OR. (PDF_EFFORT(g,box)==1 .AND. EFFORT_DATA(g,box,y)>0)) THEN
                CALL GETVARIANCE(EFFORT_DATA(g,box,y),EFFORT(g,box,y),SIGMA_EFFORT(g,box,y),SCALE_VARIANCE(g,box), &
                                 PDF_EFFORT(g,box),SIG2)
+               IF( (BIO_EFFORT(g,box)>2 .and. BIO_EFFORT(g,box)<5) .AND. y==REF_YEAR ) CYCLE
                CALL GETDISCREPANCY(EFFORT_DATA(g,box,y),EFFORT(g,box,y),SIG2,PDF_EFFORT(g,box),EFFORT_DISCREPANCY(g,box,y))
                SUM_EFFORT_DISCREPANCY(g,box)=SUM_EFFORT_DISCREPANCY(g,box)+EFFORT_DISCREPANCY(g,box,y)
                DISCREPANCY=DISCREPANCY+EFFORT_DISCREPANCY(g,box,y)
@@ -2161,10 +2169,17 @@
           write(7,'(4x,a21,F12.2)') 'deviance           = ',DEV_EFFORT(g,box)
           write(7,'(4x,a21,F12.2)') 'Chi-sq. discrepancy= ',SUM_EFFORT_DISCREPANCY(g,box)
           write(7,*)
-          IF (PDF_EFFORT(g,box)==1) then
+          IF (PDF_EFFORT(g,box)==1) THEN
              write(7,401) '    ','           ','           ',' Residuals ',' Standard  ','     Q     ','Untransfrmd','Untransfrmd',&
                                  'Chi-square '
              write(7,401) 'Year','  Observed ',' Predicted ',' (Obs-pred)',' Deviation ',' Catchabil.','  Observed ',' Predicted ',&
+                                 'Discrepancy'
+             write(7,401) '----','-----------','-----------','-----------','-----------','-----------','-----------','-----------',&
+                                 '-----------'
+           ELSEIF (BIO_EFFORT(g,box)==7 .OR. BIO_EFFORT(g,box)==8)  THEN
+             write(7,401) '    ','           ','           ',' Residuals ',' Standard  ','  Sample   ','Proportion ','Proportion ',&
+                                 'Chi-square '
+             write(7,401) 'Year','  Observed ',' Predicted ',' (Obs-pred)',' Deviation ','   Size    ','  Observed ',' Predicted ',&
                                  'Discrepancy'
              write(7,401) '----','-----------','-----------','-----------','-----------','-----------','-----------','-----------',&
                                  '-----------'
@@ -2182,6 +2197,15 @@
                  IF(EFFORT(g,box,y)<=0) THEN ; PRED=-999999999999999999.0 ; ELSE ; PRED=DLOG(EFFORT(g,box,y)) ; ENDIF
                  WRITE(7,400) y+DISPLAYYEAR-1,OBS,PRED,OBS-PRED,dSQRT(SIG2),Q_EFFORT(g,box,y)*INDEX_MEAN(g,box), &
                               EFFORT_DATA(g,box,y)*INDEX_MEAN(g,box),EFFORT(g,box,y)*INDEX_MEAN(g,box),EFFORT_DISCREPANCY(g,box,y)
+                ELSEIF (BIO_EFFORT(g,box)==7 .OR. BIO_EFFORT(g,box)==8)  THEN
+                 OBS=EFFORT_DATA(g,box,y) ; PRED=EFFORT(g,box,y)
+                 IF(SAMPLE_SIZE(g,box,y)>0) THEN
+                     WRITE(7,400) y+DISPLAYYEAR-1,OBS,PRED,OBS-PRED,dSQRT(SIG2),SAMPLE_SIZE(g,box,y), &
+                              EFFORT_DATA(g,box,y)/SAMPLE_SIZE(g,box,y),EFFORT(g,box,y)/SAMPLE_SIZE(g,box,y),EFFORT_DISCREPANCY(g,box,y)
+                   ELSE
+                     WRITE(7,400) y+DISPLAYYEAR-1,OBS,PRED,OBS-PRED,dSQRT(SIG2),SAMPLE_SIZE(g,box,y), &
+                              EFFORT_DATA(g,box,y),EFFORT(g,box,y),EFFORT_DISCREPANCY(g,box,y)
+                 ENDIF
                 ELSE
                  OBS=EFFORT_DATA(g,box,y) ; PRED=EFFORT(g,box,y)
                  WRITE(7,400) y+DISPLAYYEAR-1,OBS,PRED,OBS-PRED,dSQRT(SIG2),Q_EFFORT(g,box,y)*INDEX_MEAN(g,box), &
@@ -2259,7 +2283,7 @@
 211   format(50(A13))
 250   format(1x,i4,2x,1000(E10.3,1X))
 251   format(7x,a2,1000(I6,5X))
-400   format(4x,i4,4(2x,f11.3),2X,E11.3,3(2X,F11.3))
+400   format(4x,i4,4(2x,e11.5),2X,E11.5,3(2X,e11.5))
 401   format(4x,a4,10(2x,a11))
 499   format(4x,a4,3x,50(a6,1x)) ; 500   format(4x,i4,3x,50(f6.3,1x)) ; 501   format(4x,a4,3x,50(i4,3x))
 
@@ -2918,5 +2942,22 @@
       RETURN
       END
 
+!--------------------------------------------------------------------------------
+      INTEGER FUNCTION GETCL(CH)
+! do getcl as lahey fortran
+! code from http://computer-programming-forum.com/49-fortran/d8db554f10eeda95.htm
+!--------------------------------------------------------------------------------
+      INTEGER*2 I,STATUS,NEXT
+      CHARACTER*128 ARGSTR
+      CHARACTER*(*) CH
+      NEXT=0
+      STATUS=0
+      DO I=1,NARGS()-1
+        CALL GETARG(I,ARGSTR,STATUS)
+        CH(NEXT+1:NEXT+STATUS+1) = ARGSTR(1:STATUS)//' '
+        NEXT=NEXT+STATUS+1
+      END DO
+      GETCL=NEXT-1
+      RETURN ; END FUNCTION GETCL
 
 
