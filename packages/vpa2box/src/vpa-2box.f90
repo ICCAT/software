@@ -1,5 +1,5 @@
 !
-! Last change:  CEP  13 Apr 2017   12:29 pm
+! Last change:  CEP  12 Jul 2017   12:29 pm
 ! program VPA-2BOX.F90 , VERSION 4.01
 ! A sequential population analysis tool
 ! programmed by Clay E. Porch in FORTRAN 90
@@ -55,7 +55,7 @@
                          WEIGHT_SSB(Bs,0:As,0:Ys),RECOVERY_DATA(Ts,BS),RECAPTURE_DATA(Ts,BS,YS), &
                          EFFORT_DATA_STORE(Gs,Bs,0:Ys), SUMRDATA(Ts),SIGMA_TAG_NOMIX(1000), &
                          SIGMA_TAG_NOMIX2(1000),T_PROPORTION(12),PSEL_MEAN(Gs,Bs,0:Ys),SAMPLE_SIZE(Gs,Bs,0:Ys), &
-                         PRED_WEIGHT(Gs,Bs,0:As,0:Ys), PRED_LENGTH(Gs,Bs,0:As,0:Ys)
+                         PRED_WEIGHT(Gs,Bs,0:As,0:Ys), PRED_LENGTH(Gs,Bs,0:As,0:Ys),REF_YEAR
         INTEGER :: PDF_CATCH(Bs),PDF_EFFORT(Gs,Bs),BIO_EFFORT(Gs,Bs),BIO_CATCH(Bs), &
                    PDF_STOCKRECRUIT,SEL_TYPE(Gs,Bs),PDF_FRATIO(Bs),PDF_TERMINAL(Bs),PDF_M(Bs),PDF_T(Bs), &
                    BOTH_STOCKS(Gs,Bs),IGNORE_RECRUIT(2),N_DATA,N_Qs,NPI(GS,BS)
